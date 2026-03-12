@@ -59,8 +59,11 @@
 
 ## 容器操作紀錄
 - [X] nginx：`sudo docker run -d -p 8080:80 nginx` + `curl localhost:8080` 輸出
+  ![圖片說明](images/nginx輸出.png)
 - [X] alpine：`sudo docker run -it --rm alpine /bin/sh` 內部命令與輸出
+  ![圖片說明](images/alpine內部命令與輸出.png)
 - [X] 映像列表：`sudo docker images` 輸出
+  
 
 ## Snapshot 清單
 
