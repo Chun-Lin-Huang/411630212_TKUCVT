@@ -58,34 +58,34 @@
   ```
 
 ## 容器操作紀錄
-- [ ] nginx：`sudo docker run -d -p 8080:80 nginx` + `curl localhost:8080` 輸出
-- [ ] alpine：`sudo docker run -it --rm alpine /bin/sh` 內部命令與輸出
-- [ ] 映像列表：`sudo docker images` 輸出
+- [X] nginx：`sudo docker run -d -p 8080:80 nginx` + `curl localhost:8080` 輸出
+- [X] alpine：`sudo docker run -it --rm alpine /bin/sh` 內部命令與輸出
+- [X] 映像列表：`sudo docker images` 輸出
 
 ## Snapshot 清單
 
 | 名稱 | 建立時機 | 用途說明 | 建立前驗證 |
 |---|---|---|---|
-| clean-baseline | （時間點） | （此節點代表的狀態） | （列出建點前做了哪些驗證） |
-| docker-ready | （時間點） | （此節點代表的狀態） | （列出建點前做了哪些驗證） |
+| clean-baseline | Ubuntu 建置完成並通過 Docker 四層驗證後 | 建立第一個可回復基線，建 snapshot 之前必須先確認環境健康 | `hostnamectl`、`ip route`、`docker --version`、`docker compose version`、`sudo systemctl status docker --no-pager`、`sudo docker run --rm hello-world`（全部通過才建點）|
+| docker-ready | 完成 nginx 與 alpine 容器操作實驗後 | 已經有完整容器環境，可以直接進行服務測試 | `sudo systemctl status docker --no-pager`、`sudo docker run --rm hello-world`、`sudo docker images（確認 nginx、alpine 映像都在）|
 
 ## 故障演練三階段對照
 
 | 項目 | 故障前（基線） | 故障中（注入後） | 回復後 |
 |---|---|---|---|
-| docker.list 存在 | 是 | 否 | （填入） |
-| apt-cache policy 有候選版本 | 是 | 否 | （填入） |
-| docker 重裝可行 | 是 | 否 | （填入） |
-| hello-world 成功 | 是 | N/A | （填入） |
-| nginx curl 成功 | 是 | N/A | （填入） |
+| docker.list 存在 | 是 | 否 | 是 |
+| apt-cache policy 有候選版本 | 是 | 否 | 是 |
+| docker 重裝可行 | 是 | 否 | 是 |
+| hello-world 成功 | 是 | N/A | 是 |
+| nginx curl 成功 | 是 | N/A | 是 |
 
 ## 手動修復 vs Snapshot 回復
 
 | 面向 | 手動修復 | Snapshot 回復 |
 |---|---|---|
-| 所需時間 | （你的實測） | （你的實測） |
-| 適用情境 | （你的判斷） | （你的判斷） |
-| 風險 | （你的判斷） | （你的判斷） |
+| 所需時間 | 大約幾秒鐘到幾分鐘（要看故障複雜的程度） | 大約幾秒鐘而已（因為只要 VM 關機後 → Snapshot Manager → 選 docker-ready → Revert → 開機） |
+| 適用情境 | 小問題或是設定錯誤時（可以精準修復單一元件） | 系統被破壞或是環境混亂，需要快速回到穩定狀態時 |
+| 風險 | 可能會修錯設定或遺漏某些步驟，導致問題不能完全解決 | 會回到舊狀態，snapshot 之後的變更會全部消失 |
 
 ## Snapshot 保留策略
 - 新增條件：
