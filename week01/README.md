@@ -63,7 +63,7 @@
 - [X] alpine：`sudo docker run -it --rm alpine /bin/sh` 內部命令與輸出
   ![圖片說明](images/alpine內部命令與輸出.png)
 - [X] 映像列表：`sudo docker images` 輸出
-  
+  ![圖片說明](images/images映像列表輸出.png)
 
 ## Snapshot 清單
 
