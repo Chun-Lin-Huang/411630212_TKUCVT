@@ -4,9 +4,9 @@
 
 | VM | 網卡 | 模式 | IP | 用途 |
 |---|---|---|---|---|
-| dev-a | NIC 1 | NAT | （填入） | 上網 |
-| dev-a | NIC 2 | Host-only | （填入） | 內網互連 |
-| server-b | NIC 1 | Host-only | （填入） | 內網互連 |
+| dev-a | NIC 1 | NAT | 192.168.71.130 | 上網 |
+| dev-a | NIC 2 | Host-only | 192.168.16.128 | 內網互連 |
+| server-b | NIC 1 | Host-only | 192.168.16.129 | 內網互連 |
 
 ## 連線驗證紀錄
 
@@ -32,17 +32,17 @@
 
 | 項目 | 故障前 | 故障中 | 回復後 |
 |---|---|---|---|
-| server-b 介面狀態 | UP | DOWN | （填入） |
-| dev-a ping server-b | 成功 | 失敗 | （填入） |
-| dev-a SSH server-b | 成功 | 失敗 | （填入） |
+| server-b 介面狀態 | UP | DOWN | UP |
+| dev-a ping server-b | 成功 | 失敗 | 成功 |
+| dev-a SSH server-b | 成功 | 失敗 | 成功 |
 
 ## 故障演練二：SSH 服務停止
 
 | 項目 | 故障前 | 故障中 | 回復後 |
 |---|---|---|---|
-| ss -tlnp grep :22 | 有監聽 | 無監聽 | （填入） |
-| dev-a ping server-b | 成功 | 成功 | （填入） |
-| dev-a SSH server-b | 成功 | Connection refused | （填入） |
+| ss -tlnp grep :22 | 有監聽 | 無監聽 | 有監聽 |
+| dev-a ping server-b | 成功 | 成功 | 成功 |
+| dev-a SSH server-b | 成功 | Connection refused | 成功 |
 
 ## 排錯順序
 （寫出你的 L2 → L3 → L4 排錯步驟與每層使用的命令）
