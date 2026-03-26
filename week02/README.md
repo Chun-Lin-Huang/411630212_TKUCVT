@@ -8,6 +8,15 @@
 | dev-a | NIC 2 | Host-only | 192.168.16.128 | 內網互連 |
 | server-b | NIC 1 | Host-only | 192.168.16.129 | 內網互連 |
 
+## NAT / Bridged / Host-only 差異
+這三種網路模式主要差在「能不能上網」以及「跟外部的關係」。
+
+- NAT：VM 是透過宿主機上網的，就像借用電腦的網路一樣，所以可以上網，但外面的設備通常沒辦法直接連進來。
+- Bridged：VM 就像一台真的電腦，直接接在同一個網路裡，可以上網，也可以被其他電腦找到。
+- Host-only：只是一個內部用的網路，只能 VM 之間互相連線，不能上網，也不會被外面影響。
+
+簡單來說，NAT 比較像「共用網路」，Bridged 是「當一台真的電腦」，而 Host-only 則是「封閉的小內網」。
+
 ## 連線驗證紀錄
 
 - [X] dev-a NAT 可上網：`ping google.com` 輸出
@@ -74,8 +83,19 @@
   ```
   > 如果 ping 成功但是 SSH 顯示「Connection refused」，表示 L4 層發生問題，需要確認 SSH 服務是否啟動。
 
+### 可重跑最小命令鏈
+```bash
+ip address show
+ip route show
+ping -c 2 192.168.16.129
+ss -tlnp | grep :22
+ssh qaz@192.168.16.129 "hostname"
+```
+
 ## 網路拓樸圖
 ![圖片說明](images/network-diagram.png)
+
+* 在這個拓樸圖中，dev-a 透過 NAT 介面連接 Internet（上網用途），並且透過 Host-only 與 server-b 建立內網連線；server-b 只能透過 Host-only 與 dev-a 通訊，沒辦法直接連外。
 
 ## 排錯紀錄
 - 症狀：在確認雙 VM 的 Host-only 連線時，發現 server-b 的網路介面一開始看起來只有 IPv6 位址，未明確看到可用的 IPv4，導致沒辦法立刻確認其是否已經正確連入 Host-only 的網路，因此暫時沒辦法進行後續的 ping 與 SSH 測試。
