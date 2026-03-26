@@ -95,7 +95,10 @@ ssh qaz@192.168.16.129 "hostname"
 ## 網路拓樸圖
 ![圖片說明](images/network-diagram.png)
 
-* 在這個拓樸圖中，dev-a 透過 NAT 介面連接 Internet（上網用途），並且透過 Host-only 與 server-b 建立內網連線；server-b 只能透過 Host-only 與 dev-a 通訊，沒辦法直接連外。
+在此拓樸中：
+- dev-a 透過 NAT（ens33）連接 Internet，負責對外上網（Internet Access）
+- dev-a 與 server-b 透過 Host-only（192.168.16.0/24）進行內網通訊（Internal Network）
+- server-b 只存在於內網，不具備對外連線能力
 
 ## 排錯紀錄
 - 症狀：在確認雙 VM 的 Host-only 連線時，發現 server-b 的網路介面一開始看起來只有 IPv6 位址，未明確看到可用的 IPv4，導致沒辦法立刻確認其是否已經正確連入 Host-only 的網路，因此暫時沒辦法進行後續的 ping 與 SSH 測試。
