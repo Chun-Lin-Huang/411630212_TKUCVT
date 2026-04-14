@@ -94,8 +94,8 @@
 
 ## 排錯紀錄
 - 症狀：在測試 SSH 連線時，出現無法連線的情況，分別遇到 Connection timed out 與 Connection refused 的錯誤。
-- 診斷：先使用 ping 確認主機之間的網路是否可達，再用 ss -tlnp | grep :22 檢查 SSH 服務是否有在監聽，同時也查看 ufw status，確認防火牆是否有阻擋連線。
-- 修正：timeout 問題，發現是防火牆規則阻擋了 SSH，所以重新設定 ufw 允許正確的網段連線，refused 問題，發現是 SSH 服務被停止，透過 systemctl start ssh 重新啟動服務。
+- 診斷：先使用 ping 確認主機之間的網路是否可達，再用 `ss -tlnp | grep :22` 檢查 SSH 服務是否有在監聽，同時也查看 ufw status，確認防火牆是否有阻擋連線。
+- 修正：timeout 問題，發現是防火牆規則阻擋了 SSH，所以重新設定 ufw 允許正確的網段連線，refused 問題，發現是 SSH 服務被停止，透過 `systemctl start ssh` 重新啟動服務。
 - 驗證：修正後再次從 bastion 嘗試 SSH 連線至 app，確認可以正常登入，並再次檢查 ss 與 ufw 狀態，確認服務與防火牆皆運作正常。
 
 ## 設計決策
