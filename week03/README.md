@@ -14,19 +14,23 @@
 - 金鑰類型：ed25519
 - 公鑰部署到：app 和 db 的 ~/.ssh/authorized_keys
 - 免密碼登入驗證：
-  - bastion → app：（貼上輸出）
-  - bastion → db：（貼上輸出）
+  - bastion → app：
+    
+    ![圖片說明](images/bastion_app.png)
+  - bastion → db：
+    
+    ![圖片說明](images/bastion_db.png)
 
 ## 防火牆規則
 
 ### app 的 ufw status
-（貼上 `sudo ufw status verbose` 輸出）
+![圖片說明](images/ufw-status_app.png)
 
 ### db 的 ufw status
-（貼上 `sudo ufw status verbose` 輸出）
+![圖片說明](images/ufw-status_db.png)
 
 ### 防火牆確實在擋的證據
-（貼上步驟 13 的 curl 8080 失敗輸出）
+![圖片說明](images/curl_fail.png)
 
 ## ProxyJump 跳板連線
 - 指令：
@@ -53,10 +57,16 @@
   ```
 - 驗證輸出：
   - `ssh -J`
-  （貼上連線成功的 hostname 輸出）
+    
+    ![圖片說明](images/ssh-j_1.png)
+    ![圖片說明](images/ssh-j_2.png)
   - `SSH config`
-  （貼上連線成功的 hostname 輸出）
-- SCP 傳檔驗證：（貼上結果）
+    
+    ![圖片說明](images/ssh_config.png)
+- SCP 傳檔驗證：
+  
+  ![圖片說明](images/scp_1.png)
+  ![圖片說明](images/scp_2.png)
 
 ## 故障場景一：防火牆全封鎖
 
@@ -80,7 +90,7 @@
 - timeout 比較像是「連不到那台機器」，而 refused 則是「連到了，但對方不讓你進 (被拒絕)」。
 
 ## 網路拓樸圖
-（嵌入或連結 network-diagram）
+![圖片說明](images/network-diagram.png)
 
 ## 排錯紀錄
 - 症狀：在測試 SSH 連線時，出現無法連線的情況，分別遇到 Connection timed out 與 Connection refused 的錯誤。
