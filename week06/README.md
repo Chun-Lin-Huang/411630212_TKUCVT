@@ -12,7 +12,10 @@
 ![圖片說明](images/inspect.png)
 
 - Config.Cmd：
-  ["python3"] → 代表這個 image 預設啟動時會執行 `python3`，也就是直接進入 Python 環境。
+  ```
+  ["python3"]
+  ```
+  - 代表這個 image 預設啟動時會執行 `python3`，也就是直接進入 Python 環境。
 - Config.Env：
   ```
   PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin  
@@ -21,16 +24,20 @@
   PYTHON_VERSION=3.12.13  
   PYTHON_SHA256=c08bc65a81971c1dd5783182826503369466c7e67374d1646519adf05207b684
   ```
-  → 這些環境變數主要用來設定系統語系（LANG）、執行路徑（PATH），以及 Python 的版本與驗證資訊。
-  → 可以看出這個 image 在 build 時就已經把 Python 相關資訊寫進環境變數中。
+  - 這些環境變數主要用來設定系統語系（LANG）、執行路徑（PATH），以及 Python 的版本與驗證資訊。
+  - 可以看出這個 image 在 build 時就已經把 Python 相關資訊寫進環境變數中。
 - Config.WorkingDir：
+  ```
   （空值）
-  → 表示沒有特別設定工作目錄，預設會使用 `/`。
-  → 如果在 Dockerfile 沒有指定 WORKDIR，container 啟動後就是從 root 目錄開始。
+  ```
+  - 表示沒有特別設定工作目錄，預設會使用 `/`。
+  - 如果在 Dockerfile 沒有指定 WORKDIR，container 啟動後就是從 root 目錄開始。
 - RootFS.Layers 數量：
+  ```
   4 層
-  → 代表這個 image 是由 4 個唯讀 layer 組成。
-  → 每一層都是一個檔案系統變化（例如安裝 Python、系統套件等），Docker 會把這些 layer 疊加起來形成完整的 image。
+  ```
+  - 代表這個 image 是由 4 個唯讀 layer 組成。
+  - 每一層都是一個檔案系統變化（例如安裝 Python、系統套件等），Docker 會把這些 layer 疊加起來形成完整的 image。
 
 ## Layer 快取實驗
 | 情境 | build 時間 |
