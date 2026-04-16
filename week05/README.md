@@ -73,19 +73,19 @@
     - C（Changed）：檔案或目錄內容被修改  
     - D（Deleted）：檔案被刪除  
 * 實際案例解讀:
-    1. **新增檔案（A）**
+ 1. **新增檔案（A）**
     - `/tmp/hello.txt`
     - `/etc/nginx/conf.d/custom.conf`
 
     → 這是透過 `echo` 指令在 container 中建立的新檔案。
 
-    2. **修改目錄（C）**
+ 2. **修改目錄（C）**
     - `/etc/nginx/conf.d`
     - `/var/cache/nginx`
 
     → 因為目錄內有檔案新增或刪除，因此被標記為 Changed。
 
-    3. **刪除檔案（D）**
+ 3. **刪除檔案（D）**
     - `/etc/nginx/conf.d/default.conf`
 
     → 這是透過 `rm` 指令刪除 nginx 預設設定檔。
