@@ -53,6 +53,7 @@ ip -4 addr show
 應看到 2 組 IPv4：
 - 一組 NAT IP
 - 一組 Host-only IP
+
 ![圖片說明](images/ip_bastion.png)
 
 #### 在 app 執行
@@ -62,6 +63,7 @@ ip -4 addr show
 
 #### 預期結果
 - 應只看到 1 組 Host-only IPv4
+
 ![圖片說明](images/ip_app.png)
 
 ### Step 5: 確認 Host-only 網段一致
@@ -90,7 +92,7 @@ ping -c 3 192.168.16.131
 ```
 ![圖片說明](images/bastion_ping.png)
 
-####　app → bastion
+#### app → bastion
 ```bash
 ping -c 3 192.168.16.128
 ```
@@ -117,22 +119,28 @@ ping -c 3 192.168.16.128
   ```bash
   sudo ip link set ens33 down
   ```
+  
 - 故障前：
   ```bash
   ping -c 3 192.168.16.131
   ```
   - 可正常回應。
+  
   ![圖片說明](screenshots/fault-A-before.png)
+
 - 故障中：
   ```bash
   ssh app
   ```
   - 出現 "No route to host"。
+  
   ```bash
   ping -c 3 192.168.16.131
   ```
   - 顯示 "Destination Host Unreachable"。
+  
   ![圖片說明](screenshots/fault-A-during.png)
+
 - 回復後：
   ```bash
   sudo ip link set ens33 up
@@ -142,7 +150,9 @@ ping -c 3 192.168.16.128
     ping -c 3 192.168.16.131
     ```
     - 恢復正常。
+  
     ![圖片說明](screenshots/fault-A-after.png)
+  
 - 診斷推論：在故障中，ping 顯示 "Destination Host Unreachable"，ssh 則出現 "No route to host"，此代表來源主機在網路層（L3）即判斷無法到達目標，封包尚未成功送出，因此可判斷為網卡關閉所導致的網路層故障，而非防火牆阻擋，此情況與 timeout 本質相同，皆為網路無法到達目標主機。
 
 ### 故障 2: F2
@@ -156,23 +166,29 @@ ping -c 3 192.168.16.128
     sudo ufw status verbose
     ```
     - 確認輸出中未出現任何 `22/tcp ALLOW` 規則。
+    
 - 故障前：
   ```bash
   ssh app
   ```
   - 成功登入。
+
   ![圖片說明](screenshots/fault-B-before.png)
+
 - 故障中：
   ```bash
   ssh app
   ```
   - 出現 "Connection timed out"。
+
   ![圖片說明](screenshots/fault-B-during.png)
   ```bash
   ping -c 3 192.168.16.131
   ```
   - 仍然成功。
+    
   ![圖片說明](images/ping.png)
+
 - 回復後：
   ```bash
   sudo ufw allow from 192.168.16.128 to any port 22 proto tcp
@@ -182,7 +198,9 @@ ping -c 3 192.168.16.128
     ssh app
     ```
     - 恢復正常登入。
+
     ![圖片說明](screenshots/fault-B-after.png)
+  
 - 診斷推論：在故障中，ping 可正常回應，但 ssh 連線失敗，表示網路層（L2/L3）仍然正常，但 SSH 服務所使用的 port 22 被防火牆阻擋，因此可判斷為防火牆（L4/Policy）問題，與 F1 網路中斷（ping 失敗）不同。
 
 ### 症狀辨識（若選 F1+F2 必答）
