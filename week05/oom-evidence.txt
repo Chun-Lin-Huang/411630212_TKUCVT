@@ -1,0 +1,23 @@
+=== 故障前 ===
+[四  4月 16 15:51:56 2026] veth4ec5ca9: entered allmulticast mode
+[四  4月 16 15:51:56 2026] veth4ec5ca9: entered promiscuous mode
+[四  4月 16 15:51:56 2026] eth0: renamed from veth8250e4c
+[四  4月 16 15:51:56 2026] docker0: port 2(veth4ec5ca9) entered blocking state
+[四  4月 16 15:51:56 2026] docker0: port 2(veth4ec5ca9) entered forwarding state
+
+=== 故障中 ===
+[四  4月 16 15:32:29 2026] systemd[1]: Listening on systemd-oomd.socket - Userspace Out-Of-Memory (OOM) Killer Socket.
+[四  4月 16 16:01:42 2026] tail invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+[四  4月 16 16:01:42 2026]  oom_kill_process+0x118/0x290
+[四  4月 16 16:01:42 2026] [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name
+[四  4月 16 16:01:42 2026] oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=docker-61b4c071b7302091c17ec4ca050d7d538bc603f00fd3ee6984eb2648f77f720e.scope,mems_allowed=0,oom_memcg=/system.slice/docker-61b4c071b7302091c17ec4ca050d7d538bc603f00fd3ee6984eb2648f77f720e.scope,task_memcg=/system.slice/docker-61b4c071b7302091c17ec4ca050d7d538bc603f00fd3ee6984eb2648f77f720e.scope,task=tail,pid=4858,uid=0
+[四  4月 16 16:01:42 2026] Memory cgroup out of memory: Killed process 4858 (tail) total-vm:66420kB, anon-rss:32256kB, file-rss:776kB, shmem-rss:0kB, UID:0 pgtables:168kB oom_score_adj:0
+
+=== 容器狀態 ===
+OOMKilled=true ExitCode=137
+
+=== 回復後 ===
+200+0 records in
+200+0 records out
+209715200 bytes (200.0MB) copied, 0.767868 seconds, 260.5MB/s
+DONE
