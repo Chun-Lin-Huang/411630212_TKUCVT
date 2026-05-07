@@ -88,3 +88,64 @@
 
 ## 設計決策
 本次實作中，runtime image 選擇使用 `python:3.12-slim`，而不是 `alpine`，主要原因是 `python:3.12-slim` 基於 Debian，使用 glibc，相容性較高，大部分 Python 套件都可以直接安裝，不容易遇到相依性或編譯問題，相對地，`alpine` 使用 musl libc，雖然 image 體積更小，但許多 Python 套件在安裝時可能需要額外編譯或出現相容性問題，增加開發與除錯成本，在本次實驗中，重點是理解 Docker layer、multi-stage build 與執行行為，因此選擇較穩定的 `python:3.12-slim`，可以降低環境問題帶來的干擾，整體來看，這是一個在「穩定性與開發成本」與「極致體積優化」之間的取捨，本實驗選擇優先確保穩定與可預期的行為。
+
+## Dockerfile 案例分析
+案例的部分參考 GitHub 上的 Flask multi-stage Dockerfile 專案：
+- [`Github`](https://github.com/LondheShubham153/python-multistage-docker.git)
+
+Repo 的內容示範如何使用 multi-stage build 建立 Flask application 的 Docker image。
+
+其中 Dockerfile 主要內容如下：
+```dockerfile
+# ------------------- Stage 1: Build Stage ------------------------------
+FROM python:3.9 AS backend-builder
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the contents of the backend directory into the container at /app
+COPY backend/ .
+
+# Install dependencies specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ------------------- Stage 2: Final Stage ------------------------------
+
+# Use a slim Python 3.9 image as the final base image
+FROM python:3.9-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the built dependencies from the backend-builder stage
+COPY --from=backend-builder /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
+
+# Copy the application code from the backend-builder stage
+COPY --from=backend-builder /app /app
+
+# Expose port 5000 for the Flask application
+EXPOSE 5000
+
+# Define the default command to run the application
+CMD ["python", "app.py"]
+```
+
+## 內容分析
+### 1. 使用 multi-stage build
+這個 Dockerfile 使用 builder stage 與 runtime stage 分離的設計，只將執行 Flask 所需的檔案複製到 final image 中，這跟教材中 Part E 的 multi-stage build 概念相同，可以減少 image 大小與 attack surface。
+
+### 2. 使用 slim image
+runtime 選擇 **python:3.9-slim** 而不是完整版本的 Python image，可以減少 image 的體積，這次課程實作的設計決策一致，屬於「用較小 image 換取更高部署效率」的做法。
+
+### 3. COPY 順序與 layer cache
+Dockerfile 先安裝 requirements，再複製應用程式檔案，這樣當 app code 修改時，不需要重新執行 `pip install`，這跟 Part C 的 layer cache 實作概念相同，可以有效提升 rebuild 效率。
+
+### 4. 缺少 non-root 設計
+這個 Dockerfile 雖然有使用 multi-stage 與 slim image，但沒有切換成 non-root user，所以 container 預設仍然會以 root 身份執行，相比之下，這次課程的實作中的：
+```dockerfile
+USER appuser
+```
+會更符合 production 的安全最佳實務。
+
+### 總結
+透過分析實際的 GitHub 專案，可以發現這次教材中的 multi-stage build、layer cache 與 slim image 都是目前 Docker 的常見最佳實踐，同時也可以看出，即使是公開專案，也不一定會完整做到 non-root 等安全設計，所以教材中的最佳實踐仍然具有實務價值。
