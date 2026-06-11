@@ -207,7 +207,7 @@ docker compose exec db sh -c 'psql -U postgres -d $POSTGRES_DB -c "CREATE TABLE 
 所以 named volume 的生命週期不是跟單一容器綁定，而是獨立存在，容器可以刪除和重建，但 volume 只要沒有被明確刪除，資料就會繼續保留。
 
 ## 5. Part D：生產化加固
-這一部分我把 [compose.yaml](/compose.yaml) 加上比較接近 production 的設定，主要包含四類：log rotation、資源上限、權限階梯和健康檢查，加固後也要確認服務還是可以正常跑，不能因為安全設定加太多導致 app 起不來。
+這一部分我把 [compose.yaml](compose.yaml) 加上比較接近 production 的設定，主要包含四類：log rotation、資源上限、權限階梯和健康檢查，加固後也要確認服務還是可以正常跑，不能因為安全設定加太多導致 app 起不來。
 
 我在 `app` service 加上的重點設定如下：
 ```yaml
